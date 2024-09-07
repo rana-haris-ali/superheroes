@@ -6,3 +6,4 @@ passlib[bcrypt]
 pydantic_settings
 sqlalchemy
 pymysql
+alembic
