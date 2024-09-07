@@ -1,0 +1,6 @@
+# Include all production dependencies
+-r requirements.txt
+
+# Development dependencies
+black
+flake8
