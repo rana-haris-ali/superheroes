@@ -8,6 +8,4 @@ class Settings(BaseSettings):
         env_file = ".env"  # Automatically loads from .env
 
 
-# Usage in FastAPI
-def get_settings():
-    return Settings()
+settings = Settings()

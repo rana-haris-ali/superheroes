@@ -1,10 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from app.core.config import get_settings
-
-# Load settings using the cached function
-settings = get_settings()
+from app.core.config import settings
 
 # Create the SQLAlchemy engine using MySQL connection URL from .env
 engine = create_engine(settings.database_url)

@@ -4,7 +4,7 @@ from logging.config import fileConfig
 from alembic import context
 
 # Import your FastAPI settings
-from app.core.config import get_settings
+from app.core.config import settings
 from app.models import Base
 
 # this is the Alembic Config object, which provides
@@ -14,9 +14,6 @@ config = context.config
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
 fileConfig(config.config_file_name)
-
-# Load settings from FastAPI config
-settings = get_settings()
 
 # Set the SQLAlchemy URL dynamically from environment variables or .env
 config.set_main_option("sqlalchemy.url", settings.database_url)
