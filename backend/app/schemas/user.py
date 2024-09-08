@@ -10,7 +10,7 @@ class UserCreate(UserBase):
     password: str = Field(..., min_length=6, max_length=30)
 
 
-class UserSchema(UserBase):
+class UserPublicSchema(UserBase):
     id: int
     is_admin: bool = False
 
