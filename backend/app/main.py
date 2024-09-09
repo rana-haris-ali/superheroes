@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from app.core.config import settings
+from app.routers.superhero import superhero_router
 from app.routers.user import user_router
 from app.routers.auth import auth_router
 
@@ -14,3 +15,4 @@ def hello_world():
 # Routers
 app.include_router(user_router)
 app.include_router(auth_router)
+app.include_router(superhero_router)
