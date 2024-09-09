@@ -1,13 +1,11 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from starlette import status
 
 from app.dependencies.pagination_dependency import PageParamsDep
 from app.dependencies.db_dependency import DBSessionDep
-from app.models import Superhero
 from app.schemas.pagination import PagedResponseSchema
-from app.schemas.superhero import SuperheroBaseSchema
-from app.utils.pagination import paginate
-from app.services.superhero import get_superheros
+from app.schemas.superhero import SuperheroBaseSchema, SuperheroDetailsSchema
+from app.services.superhero import get_superheros, get_superhero_by_id
 
 superhero_router = APIRouter(prefix="/superheros", tags=["Superhero"])
 
@@ -19,3 +17,19 @@ superhero_router = APIRouter(prefix="/superheros", tags=["Superhero"])
 )
 def get_all_superheros(page_params: PageParamsDep, db: DBSessionDep):
     return get_superheros(page_params, db)
+
+
+@superhero_router.get(
+    "/{superhero_id}",
+    status_code=status.HTTP_200_OK,
+    response_model=SuperheroDetailsSchema,
+)
+def get_superhero(superhero_id: int, db: DBSessionDep):
+    superhero = get_superhero_by_id(superhero_id, db)
+
+    if not superhero:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Superhero not found"
+        )
+
+    return superhero
