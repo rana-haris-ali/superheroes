@@ -17,8 +17,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-	title: 'Superheros',
-	description: 'Superheros encyclopedia',
+	title: 'superheroes',
+	description: 'superheroes encyclopedia',
 };
 
 export default function RootLayout({
