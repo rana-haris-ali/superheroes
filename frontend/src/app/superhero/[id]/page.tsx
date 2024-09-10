@@ -11,6 +11,7 @@ import { Progress } from '@/components/ui/progress';
 import { useSingleSuperhero } from '@/lib/react-query-hooks';
 import Image from 'next/image';
 import Skeleton from '@/components/single-superhero-skeleton';
+import { toast } from 'react-toastify';
 
 export default function Page({ params }: { params: { id: string } }) {
 	const { data, error, isLoading } = useSingleSuperhero({
