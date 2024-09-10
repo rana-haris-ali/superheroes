@@ -9,6 +9,7 @@ class LoginRequest(BaseModel):
 
 
 class Token(BaseModel):
+    name: str
     access_token: str
     token_type: str
 
