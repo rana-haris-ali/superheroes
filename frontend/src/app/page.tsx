@@ -10,6 +10,8 @@ import { SuperheroBaseType } from '@/types/superhero';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
+import Skeleton from '@/components/homepage-skeleton';
+import { toast } from 'react-toastify';
 
 export default function Home() {
 	const pageSize = 12;
@@ -24,8 +26,11 @@ export default function Home() {
 	// Calculate total pages
 	const totalPages = Math.ceil((data?.total ?? 0) / pageSize);
 
-	if (isLoading) return <p>Loading...</p>;
-	if (error) return <p>Error: {error.message}</p>;
+	if (isLoading) return <Skeleton />;
+
+	if (error) {
+		toast(error.message, { type: 'error' });
+	}
 
 	return (
 		<div className='flex flex-col min-h-screen bg-muted/40'>
@@ -159,9 +164,12 @@ export default function Home() {
 										</div>
 										<div className='flex items-center justify-between'>
 											<div className='flex gap-2'>
-												<Button variant='secondary' className='font-bold'>
+												<Link
+													href={`/superhero/${selectedSuperhero.id}`}
+													className='font-bold'
+												>
 													Details
-												</Button>
+												</Link>
 											</div>
 										</div>
 									</div>
