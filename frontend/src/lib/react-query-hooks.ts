@@ -1,6 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchSuperheroes } from './api';
+import { fetchSuperheroById, fetchSuperheroes } from './api';
 import { PaginationParams } from '@/types/pagination';
+
+// Hook to fetch superhero by id
+export const useSingleSuperhero = ({ id }: { id: number }) => {
+	return useQuery({
+		queryKey: ['single-superhero'],
+		queryFn: () => fetchSuperheroById({ id }),
+	})
+};
 
 // Hook to fetch all superheroes
 export const useSuperheroes = (paginationParams: PaginationParams) => {
