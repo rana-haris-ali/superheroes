@@ -4,7 +4,7 @@ from . import Base
 
 
 class Superhero(Base):
-    __tablename__ = "superheros"
+    __tablename__ = "superheroes"
 
     id = Column(Integer, primary_key=True)
     name = Column(String(255), nullable=False)

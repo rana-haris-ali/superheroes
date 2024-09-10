@@ -5,7 +5,7 @@ from app.schemas.superhero import SuperheroBaseSchema, SuperheroDetailsSchema
 from app.utils.pagination import paginate
 
 
-def get_superheros(
+def get_superheroes(
     page_params: PageParamsSchema, db: Session
 ) -> PagedResponseSchema[SuperheroBaseSchema]:
     query = db.query(Superhero)

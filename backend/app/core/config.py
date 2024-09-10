@@ -6,7 +6,7 @@ class Settings(BaseSettings):
     access_token_secret_key: str
     access_token_algorithm: str = "HS256"
     access_token_expire_minutes: str
-    project_name: str = "Superheros Backend"
+    project_name: str = "superheroes Backend"
     project_version: str = "1.0.0"
 
     class Config:
