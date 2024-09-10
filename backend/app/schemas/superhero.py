@@ -4,6 +4,7 @@ from pydantic import BaseModel
 class SuperheroBaseSchema(BaseModel):
     id: int
     name: str
+    publisher: str | None
     intelligence: int | None
     strength: int | None
     speed: int | None
@@ -21,7 +22,6 @@ class SuperheroDetailsSchema(SuperheroBaseSchema):
     alter_egos: str | None
     place_of_birth: str | None
     first_appearance: str | None
-    publisher: str | None
     alignment: str | None
     gender: str | None
     race: str | None
