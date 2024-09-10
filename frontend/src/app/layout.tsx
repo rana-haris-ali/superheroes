@@ -3,6 +3,7 @@ import localFont from 'next/font/local';
 import { ThemeProvider } from '@/components/theme-provider';
 import Navbar from '@/components/navbar';
 import './globals.css';
+import ReactQueryProvider from '@/lib/react-query-provider';
 
 const geistSans = localFont({
 	src: './fonts/GeistVF.woff',
@@ -26,20 +27,22 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang='en'>
-			<body
-				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-			>
-				<ThemeProvider
-					attribute='class'
-					defaultTheme='system'
-					enableSystem
-					disableTransitionOnChange
+			<html lang='en'>
+				<body
+					className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 				>
-					<Navbar />
-					{children}
-				</ThemeProvider>
-			</body>
-		</html>
+					<ReactQueryProvider>
+						<ThemeProvider
+							attribute='class'
+							defaultTheme='system'
+							enableSystem
+							disableTransitionOnChange
+						>
+							<Navbar />
+							{children}
+						</ThemeProvider>
+					</ReactQueryProvider>
+				</body>
+			</html>
 	);
 }
