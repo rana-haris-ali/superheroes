@@ -2,8 +2,11 @@ import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import { ThemeProvider } from '@/components/theme-provider';
 import Navbar from '@/components/navbar';
-import './globals.css';
+import { AuthProvider } from './context/auth-context';
 import ReactQueryProvider from '@/lib/react-query-provider';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import './globals.css';
 
 const geistSans = localFont({
 	src: './fonts/GeistVF.woff',
@@ -17,8 +20,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-	title: 'superheroes',
-	description: 'superheroes encyclopedia',
+	title: 'Superheroes',
+	description: 'Superheroes encyclopedia',
 };
 
 export default function RootLayout({
@@ -27,6 +30,7 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
+		<AuthProvider>
 			<html lang='en'>
 				<body
 					className={`${geistSans.variable} ${geistMono.variable} antialiased`}
@@ -40,9 +44,11 @@ export default function RootLayout({
 						>
 							<Navbar />
 							{children}
+							<ToastContainer />
 						</ThemeProvider>
 					</ReactQueryProvider>
 				</body>
 			</html>
+		</AuthProvider>
 	);
 }
