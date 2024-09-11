@@ -154,6 +154,7 @@ def get_superhero_team_suggestion(
         )
     )
 
+    # TODO: parallelize the DB calls
     # Retrieve the results for each alignment
     good_heroes = get_superheroes_by_alignment(db, "good", good_count)
     bad_heroes = get_superheroes_by_alignment(db, "bad", bad_count)
