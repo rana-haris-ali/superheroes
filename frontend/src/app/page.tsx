@@ -45,7 +45,7 @@ export default function Home() {
 							<span className='sr-only'>View {superhero.name}</span>
 						</Link>
 						<Image
-							src={superhero.image_url!}
+							src={superhero.image_url ?? '/superhero-avatar.jpg'}
 							alt={superhero.name}
 							width={400}
 							height={400}
