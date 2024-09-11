@@ -6,3 +6,5 @@ from .user import User
 from .superhero import Superhero
 from .alias import Alias
 from .favorite_superhero import FavoriteSuperhero
+from .team import Team
+from .team_member import TeamMember

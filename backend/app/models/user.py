@@ -18,6 +18,8 @@ class User(Base):
     created_at = Column(DateTime, default=datetime.now, nullable=False)
     updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.utcnow)
 
+    # relationship of User with Team (One-to-Many)
+    teams = relationship("Team", back_populates="creator")
     # Many-to-Many relationship with superheroes table
     favorite_superheroes = relationship(
         "Superhero",
