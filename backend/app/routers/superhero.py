@@ -34,8 +34,8 @@ superhero_router = APIRouter(prefix="/superheroes", tags=["Superhero"])
     status_code=status.HTTP_200_OK,
     response_model=PagedResponseSchema[SuperheroBaseSchema],
 )
-def get_all_superheroes(page_params: PageParamsDep, db: DBSessionDep):
-    return get_superheroes(page_params, db)
+def get_all_superheroes(db: DBSessionDep, page_params: PageParamsDep, search_query: str = None):
+    return get_superheroes(db, page_params, search_query)
 
 
 @superhero_router.get(

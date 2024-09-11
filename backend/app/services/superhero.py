@@ -9,12 +9,22 @@ from app.models import Superhero, User, FavoriteSuperhero
 from app.schemas.pagination import PagedResponseSchema, PageParamsSchema
 from app.schemas.superhero import SuperheroBaseSchema
 from app.utils.pagination import paginate
+from sqlalchemy import or_
 
 
 def get_superheroes(
-    page_params: PageParamsSchema, db: Session
+    db: Session, page_params: PageParamsSchema, search_query: str = None
 ) -> PagedResponseSchema[SuperheroBaseSchema]:
     query = db.query(Superhero)
+
+    # Apply search filter if search_query is provided
+    if search_query:
+        query = query.filter(
+            or_(
+                Superhero.name.ilike(f"%{search_query}%"),  # Searching by name
+            )
+        )
+
     return paginate(page_params, query, SuperheroBaseSchema)
 
 
