@@ -8,15 +8,24 @@ const apiClient = axios.create({
 	},
 });
 
-// apiClient.interceptors.request.use((config) => {
-// 	// Example: Add authorization token if using session storage
-// 	const token = sessionStorage.getItem('token');
-// 	if (token) {
-// 		config.headers.Authorization = `Bearer ${token}`;
-// 	}
-// 	return config;
-// }, (error) => {
-// 	return Promise.reject(error);
-// });
+// Add a response interceptor to handle 401 errors globally
+apiClient.interceptors.response.use(
+	(response) => {
+		// If the response is successful, just return the response
+		return response;
+	},
+	(error) => {
+		// Check if the error is a 401
+		if (error.response && error.response.status === 401) {
+			sessionStorage.removeItem('token');
+			sessionStorage.removeItem('name');
+			delete axios.defaults.headers.common['Authorization'];
+			// Redirect the user to the /login page
+			window.location.href = '/login';
+		}
+		// Return a rejected promise to handle the error elsewhere if needed
+		return Promise.reject(error);
+	}
+);
 
 export default apiClient;
