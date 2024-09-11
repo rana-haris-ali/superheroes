@@ -2,6 +2,7 @@ from typing import List
 from pydantic import BaseModel, field_validator, Field
 
 from app.core.config import settings
+from app.schemas.superhero import SuperheroLimitedDataSchema, SuperheroAttributesSchema
 
 
 class TeamBaseSchema(BaseModel):
@@ -28,6 +29,17 @@ class CreateTeamSchema(BaseModel):
         if len(value) != len(set(value)):
             raise ValueError("Team must contain unique superheroes.")
         return value
+
+    class Config:
+        from_attributes = True
+
+
+class TeamWithMembersSchema(BaseModel):
+    id: int
+    name: str
+    creator_id: int
+    team_members: List[SuperheroLimitedDataSchema]
+    avg_attributes: SuperheroAttributesSchema
 
     class Config:
         from_attributes = True
