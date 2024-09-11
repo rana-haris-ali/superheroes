@@ -38,3 +38,10 @@ class SuperheroDetailsSchema(SuperheroBaseSchema):
 
     class Config:
         from_attributes = True
+
+
+class FavoriteSuperheroResponseSchema(BaseModel):
+    superhero_id: int
+
+    class Config:
+        from_attributes = True

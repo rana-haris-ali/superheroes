@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, DECIMAL
 from sqlalchemy.orm import relationship
 from . import Base
+from .favorite_superhero import FavoriteSuperhero
 
 
 class Superhero(Base):
@@ -41,3 +42,9 @@ class Superhero(Base):
     image_url = Column(String(255), nullable=False)
 
     aliases = relationship("Alias", back_populates="superhero")
+    # Many-to-Many relationship with users table
+    favorited_by_users = relationship(
+        "User",
+        secondary=FavoriteSuperhero.__tablename__,
+        back_populates="favorite_superheroes",
+    )
