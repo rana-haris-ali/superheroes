@@ -49,6 +49,9 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 			setToken(tokenFromStorage);
 			setName(nameFromStorage);
 			setIsAuthenticated(true);
+			apiClient.defaults.headers.common[
+				'Authorization'
+			] = `Bearer ${tokenFromStorage}`;
 		}
 	}, []);
 
