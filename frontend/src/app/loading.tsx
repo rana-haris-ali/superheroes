@@ -2,7 +2,7 @@ import { cn } from '@/lib/utils';
 
 export default function Loading({ className }: { className?: string }) {
 	return (
-		<div className='flex items-center justify-center min-h-screen'>
+		<div className='flex items-center justify-center'>
 			<svg
 				xmlns='http://www.w3.org/2000/svg'
 				width='24'

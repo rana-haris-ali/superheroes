@@ -7,6 +7,12 @@ import { SVGProps } from 'react';
 import { ThemeToggle } from './theme-toggle';
 import { useAuth } from '@/app/context/auth-context';
 import { LogOut } from 'lucide-react';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from './ui/dropdown-menu';
 
 export default function Navbar() {
 	const { name, isAuthenticated, logout } = useAuth();
@@ -23,9 +29,7 @@ export default function Navbar() {
 				<SheetContent side='left'>
 					<div className='grid gap-2 py-6'>
 						{name && (
-							<p className='text-lg font-semibold underline'>
-								Hi, {name}!
-							</p>
+							<p className='text-lg font-semibold underline'>Hi, {name}!</p>
 						)}
 						<Link
 							href='/'
@@ -34,13 +38,50 @@ export default function Navbar() {
 						>
 							Superheroes
 						</Link>
-						<Link
-							href='#'
-							className='flex w-full items-center py-2 text-lg font-semibold'
-							prefetch={false}
-						>
-							Teams
-						</Link>
+						<DropdownMenu>
+							<DropdownMenuTrigger className='flex w-full items-center py-2 text-lg font-semibold'>
+								Team Options
+								<ChevronDownIcon className='h-4 w-4' />
+							</DropdownMenuTrigger>
+							<DropdownMenuContent>
+								<DropdownMenuItem>
+									<Link
+										href='/teams/create'
+										className='flex items-center gap-2'
+										prefetch={false}
+									>
+										Create Team
+									</Link>
+								</DropdownMenuItem>
+								<DropdownMenuItem>
+									<Link
+										href='#'
+										className='flex items-center gap-2'
+										prefetch={false}
+									>
+										Team Recommendation
+									</Link>
+								</DropdownMenuItem>
+								<DropdownMenuItem>
+									<Link
+										href='#'
+										className='flex items-center gap-2'
+										prefetch={false}
+									>
+										Team Fight!
+									</Link>
+								</DropdownMenuItem>
+								<DropdownMenuItem>
+									<Link
+										href='/teams/list'
+										className='flex items-center gap-2'
+										prefetch={false}
+									>
+										My Teams
+									</Link>
+								</DropdownMenuItem>
+							</DropdownMenuContent>
+						</DropdownMenu>
 						{isAuthenticated ? (
 							<Button
 								onClick={() => logout()}
@@ -74,11 +115,7 @@ export default function Navbar() {
 				<span className='sr-only'>Superheroes Homepage</span>
 			</Link>
 			<nav className='ml-auto hidden lg:flex items-center gap-6'>
-				{name && (
-					<p className='text-lg font-semibold underline'>
-						Hi, {name}!
-					</p>
-				)}
+				{name && <p className='text-lg font-semibold underline'>Hi, {name}!</p>}
 				<Link
 					href='/'
 					className='group inline-flex h-9 w-max justify-center rounded-md bg-white px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-gray-100/50 data-[state=open]:bg-gray-100/50 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus:bg-gray-800 dark:focus:text-gray-50 dark:data-[active]:bg-gray-800/50 dark:data-[state=open]:bg-gray-800/50'
@@ -86,13 +123,50 @@ export default function Navbar() {
 				>
 					Superheroes
 				</Link>
-				<Link
-					href='#'
-					className='group inline-flex h-9 w-max justify-center rounded-md bg-white px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-gray-100/50 data-[state=open]:bg-gray-100/50 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus:bg-gray-800 dark:focus:text-gray-50 dark:data-[active]:bg-gray-800/50 dark:data-[state=open]:bg-gray-800/50'
-					prefetch={false}
-				>
-					Teams
-				</Link>
+				<DropdownMenu>
+					<DropdownMenuTrigger className='group inline-flex h-9 w-max justify-center items-center rounded-md bg-white px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-gray-100/50 data-[state=open]:bg-gray-100/50 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus:bg-gray-800 dark:focus:text-gray-50 dark:data-[active]:bg-gray-800/50 dark:data-[state=open]:bg-gray-800/50'>
+						Team Options
+						<ChevronDownIcon className='h-4 w-4' />
+					</DropdownMenuTrigger>
+					<DropdownMenuContent>
+						<DropdownMenuItem>
+							<Link
+								href='/teams/create'
+								className='flex items-center gap-2'
+								prefetch={false}
+							>
+								Create Team
+							</Link>
+						</DropdownMenuItem>
+						<DropdownMenuItem>
+							<Link
+								href='#'
+								className='flex items-center gap-2'
+								prefetch={false}
+							>
+								Team Recommendation
+							</Link>
+						</DropdownMenuItem>
+						<DropdownMenuItem>
+							<Link
+								href='#'
+								className='flex items-center gap-2'
+								prefetch={false}
+							>
+								Team Fight!
+							</Link>
+						</DropdownMenuItem>
+						<DropdownMenuItem>
+							<Link
+								href='/teams/list'
+								className='flex items-center gap-2'
+								prefetch={false}
+							>
+								My Teams
+							</Link>
+						</DropdownMenuItem>
+					</DropdownMenuContent>
+				</DropdownMenu>
 				{isAuthenticated ? (
 					<Button
 						onClick={() => logout()}
@@ -171,6 +245,25 @@ function SiteIcon(props: SVGProps<SVGSVGElement>) {
 				<path d='M2505 2790 c-4 -6 14 -10 47 -10 38 0 49 3 38 10 -20 13 -77 13 -85 0z' />
 				<path d='M2750 2644 l-75 -13 65 4 c36 2 76 8 90 14 32 13 13 12 -80 -5z' />
 			</g>
+		</svg>
+	);
+}
+
+function ChevronDownIcon(props: SVGProps<SVGSVGElement>) {
+	return (
+		<svg
+			{...props}
+			xmlns='http://www.w3.org/2000/svg'
+			width='24'
+			height='24'
+			viewBox='0 0 24 24'
+			fill='none'
+			stroke='currentColor'
+			strokeWidth='2'
+			strokeLinecap='round'
+			strokeLinejoin='round'
+		>
+			<path d='m6 9 6 6 6-6' />
 		</svg>
 	);
 }
