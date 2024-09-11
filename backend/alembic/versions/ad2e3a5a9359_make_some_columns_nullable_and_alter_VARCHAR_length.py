@@ -33,11 +33,15 @@ def upgrade() -> None:
     op.alter_column(
         "superheroes", "strength", existing_type=mysql.INTEGER(), nullable=True
     )
-    op.alter_column("superheroes", "speed", existing_type=mysql.INTEGER(), nullable=True)
+    op.alter_column(
+        "superheroes", "speed", existing_type=mysql.INTEGER(), nullable=True
+    )
     op.alter_column(
         "superheroes", "durability", existing_type=mysql.INTEGER(), nullable=True
     )
-    op.alter_column("superheroes", "power", existing_type=mysql.INTEGER(), nullable=True)
+    op.alter_column(
+        "superheroes", "power", existing_type=mysql.INTEGER(), nullable=True
+    )
     op.alter_column(
         "superheroes", "combat", existing_type=mysql.INTEGER(), nullable=True
     )

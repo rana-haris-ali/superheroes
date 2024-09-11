@@ -42,4 +42,8 @@ def login(db: DBSessionDep, user_form_data: OAuth2PasswordRequestForm = Depends(
 
     access_token = create_access_token(token_data)
 
-    return {"name":user_authenticated.name, "access_token": access_token, "token_type": "bearer"}
+    return {
+        "name": user_authenticated.name,
+        "access_token": access_token,
+        "token_type": "bearer",
+    }
