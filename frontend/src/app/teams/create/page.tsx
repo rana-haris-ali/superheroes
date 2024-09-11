@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -27,6 +27,7 @@ export default function CreateTeam() {
 	const [selectedSuperheroes, setSelectedSuperheroes] = useState<
 		SuperheroBaseType[]
 	>([]);
+	const [isResultsVisible, setResultsVisible] = useState(false);
 	const { data: superheroes, isLoading } = useSuperheroes(
 		{
 			page: 1,
@@ -40,11 +41,26 @@ export default function CreateTeam() {
 		teamMembers: selectedSuperheroes.map((superhero) => superhero.id),
 	});
 
+	const resultsRef = useRef<HTMLDivElement>(null);
+
 	useEffect(() => {
 		if (!isAuthenticated) {
 			router.push('/login?redirect=/teams/create');
 		}
 	}, [isAuthenticated, router]);
+
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			if (
+				resultsRef.current &&
+				!resultsRef.current.contains(event.target as Node)
+			) {
+				setResultsVisible(false);
+			}
+		};
+		document.addEventListener('mousedown', handleClickOutside);
+		return () => document.removeEventListener('mousedown', handleClickOutside);
+	}, []);
 
 	const addHero = (hero: SuperheroBaseType) => {
 		if (
@@ -52,6 +68,7 @@ export default function CreateTeam() {
 			!selectedSuperheroes.find((h) => h.id === hero.id)
 		) {
 			setSelectedSuperheroes([...selectedSuperheroes, hero]);
+			// setResultsVisible(false); // Hide results after selection
 		}
 	};
 
@@ -76,60 +93,73 @@ export default function CreateTeam() {
 					type='text'
 					placeholder='Search superheroes'
 					value={searchTerm}
-					onChange={(e) => setSearchTerm(e.target.value)}
+					onChange={(e) => {
+						setSearchTerm(e.target.value);
+						setResultsVisible(true); // Show results when typing
+					}}
 					className='pr-10'
 				/>
 				<Search className='absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400' />
+				{isResultsVisible && searchTerm && (
+					<div
+						ref={resultsRef}
+						className='absolute z-10 mt-2 w-full overflow-y-auto bg-white border border-gray-200 rounded-lg shadow-lg'
+					>
+						<Card className='m-0 p-0'>
+							<CardContent className='p-4'>
+								{isLoading ? (
+									<Loading className='flex items-center justify-center h-10 w-10' />
+								) : (
+									superheroes?.results?.map((superhero) => (
+										<div
+											key={superhero.id}
+											onClick={() => addHero(superhero)}
+											className='flex items-center mb-2 p-2 rounded-lg transition-all duration-300 hover:bg-secondary hover:shadow-md cursor-pointer'
+										>
+											<Image
+												src={superhero.image_url ?? '/superhero-avatar.jpg'}
+												alt={superhero.name}
+												className='rounded-full mr-3'
+												height={40}
+												width={40}
+											/>
+											<Button
+												variant='ghost'
+												className='w-full justify-start font-bold text-md'
+												disabled={
+													selectedSuperheroes.length >= MAX_TEAM_MEMBERS ||
+													!!selectedSuperheroes.find(
+														(h) => h.id === superhero.id
+													)
+												}
+											>
+												{superhero.name} ({superhero.publisher})
+											</Button>
+											<div className='flex flex-wrap lg:flex-nowrap items-start'>
+												<Attribute
+													label='Intelligence'
+													value={superhero.intelligence}
+												/>
+												<Attribute
+													label='Strength'
+													value={superhero.strength}
+												/>
+												<Attribute label='Speed' value={superhero.speed} />
+												<Attribute
+													label='Durability'
+													value={superhero.durability}
+												/>
+												<Attribute label='Power' value={superhero.power} />
+												<Attribute label='Combat' value={superhero.combat} />
+											</div>
+										</div>
+									))
+								)}
+							</CardContent>
+						</Card>
+					</div>
+				)}
 			</div>
-			{searchTerm && (
-				<Card className='mb-4 shadow-lg border border-gray-200 rounded-lg'>
-					<CardContent className='p-4'>
-						{isLoading ? (
-							<Loading className='flex items-center justify-center h-10 w-10' />
-						) : (
-							superheroes?.results?.map((superhero) => (
-								<div
-									key={superhero.id}
-									onClick={() => addHero(superhero)}
-									className='flex items-center mb-2 p-2 rounded-lg transition-all duration-300 hover:bg-secondary hover:shadow-md cursor-pointer'
-								>
-									<Image
-										src={superhero.image_url ?? '/superhero-avatar.jpg'}
-										alt={superhero.name}
-										className='rounded-full mr-3'
-										height={40}
-										width={40}
-									/>
-									<Button
-										variant='ghost'
-										className='w-full justify-start font-bold text-md'
-										disabled={
-											selectedSuperheroes.length >= MAX_TEAM_MEMBERS ||
-											!!selectedSuperheroes.find((h) => h.id === superhero.id)
-										}
-									>
-										{superhero.name} ({superhero.publisher})
-									</Button>
-									<div className='flex flex-wrap lg:flex-nowrap items-start'>
-										<Attribute
-											label='Intelligence'
-											value={superhero.intelligence}
-										/>
-										<Attribute label='Strength' value={superhero.strength} />
-										<Attribute label='Speed' value={superhero.speed} />
-										<Attribute
-											label='Durability'
-											value={superhero.durability}
-										/>
-										<Attribute label='Power' value={superhero.power} />
-										<Attribute label='Combat' value={superhero.combat} />
-									</div>
-								</div>
-							))
-						)}
-					</CardContent>
-				</Card>
-			)}
 			<div className='mb-4'>
 				<h2 className='text-xl font-semibold mb-2'>
 					Selected Heroes ({selectedSuperheroes.length}/{MAX_TEAM_MEMBERS})
