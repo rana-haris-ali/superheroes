@@ -1,6 +1,10 @@
 from sqlalchemy import Column, Integer, String, Boolean, DateTime
 from datetime import datetime
+
+from sqlalchemy.orm import relationship
+
 from . import Base
+from .favorite_superhero import FavoriteSuperhero
 
 
 class User(Base):
@@ -13,3 +17,10 @@ class User(Base):
     is_admin = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.now, nullable=False)
     updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.utcnow)
+
+    # Many-to-Many relationship with superheroes table
+    favorite_superheroes = relationship(
+        "Superhero",
+        secondary=FavoriteSuperhero.__tablename__,
+        back_populates="favorited_by_users",
+    )
