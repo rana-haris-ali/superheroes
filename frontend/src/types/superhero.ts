@@ -40,3 +40,13 @@ export type SuperheroDetailsType = {
 	group_affiliation: string | null
 	relatives: string | null
 }
+
+
+export type SuperheroAttributesType = {
+	intelligence: number | null
+	strength: number | null
+	speed: number | null
+	durability: number | null
+	power: number | null
+	combat: number | null
+}

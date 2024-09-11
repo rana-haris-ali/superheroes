@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { createTeam, fetchSuperheroById, fetchSuperheroes } from './api';
+import { createTeam, fetchMyTeams, fetchSuperheroById, fetchSuperheroes } from './api';
 import { PaginationParams } from '@/types/pagination';
 import { CreateTeamType } from '@/types/team';
 
@@ -23,6 +23,14 @@ export const useSuperheroes = (
 		enabled,
 		/* important for appending new page results, otherwise the UI will jump*/
 		placeholderData: (prev) => prev
+	})
+};
+
+// Hook to fetch teams of the logged-in user
+export const useMyTeams = () => {
+	return useQuery({
+		queryKey: ['my-teams'],
+		queryFn: fetchMyTeams,
 	})
 };
 
