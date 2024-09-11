@@ -34,7 +34,7 @@ def create_favorite_superhero(
         db.commit()
         db.refresh(favorite_superhero)
         return favorite_superhero
-    except DBAPIError as e:
+    except Exception as e:
         db.rollback()
         raise e
 

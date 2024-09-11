@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey, DECIMAL
 from sqlalchemy.orm import relationship
 from . import Base
 from .favorite_superhero import FavoriteSuperhero
+from .team_member import TeamMember
 
 
 class Superhero(Base):
@@ -47,4 +48,10 @@ class Superhero(Base):
         "User",
         secondary=FavoriteSuperhero.__tablename__,
         back_populates="favorite_superheroes",
+    )
+    # Many-to-Many relationship with Team table
+    teams = relationship(
+        "Team",
+        secondary=TeamMember.__tablename__,
+        back_populates="team_members",
     )

@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     access_token_expire_minutes: str
     project_name: str = "superheroes Backend"
     project_version: str = "1.0.0"
+    max_superhero_team_members: int = 10
 
     class Config:
         env_file = ".env"  # Automatically loads from .env

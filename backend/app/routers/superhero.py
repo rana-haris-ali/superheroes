@@ -58,7 +58,8 @@ def add_favorite_superhero(
         )
     except IntegrityError:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="Superhero already liked"
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Superhero is either already liked or doesn't exist",
         )
 
     return favorite_superhero
