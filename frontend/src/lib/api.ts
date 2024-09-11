@@ -2,11 +2,11 @@ import { Paginated, PaginationParams } from '@/types/pagination';
 import apiClient from './axios'; // Import the Axios instance
 import { SuperheroBaseType, SuperheroDetailsType } from '@/types/superhero'
 import { UserSignupParams } from '@/types/user';
-import { CreateTeamType, TeamBaseType } from '@/types/team';
+import { CreateTeamType, TeamBaseType, TeamWithTeamMembersType } from '@/types/team';
 
 // User signup
 export const userSignup = async (signupParams: UserSignupParams) => {
-	const response = await apiClient.post('/users', {
+	const response = await apiClient.post('/users/', {
 		name: signupParams.name,
 		email: signupParams.email,
 		password: signupParams.password
@@ -25,7 +25,7 @@ export const fetchSuperheroes = async (
 	paginationParams: PaginationParams,
 	searchText: string | null = null
 ): Promise<Paginated<SuperheroBaseType>> => {
-	const response = await apiClient.get('/superheroes', {
+	const response = await apiClient.get('/superheroes/', {
 		params: {
 			...paginationParams,
 			...(searchText && {
@@ -40,10 +40,15 @@ export const fetchSuperheroes = async (
 export const createTeam = async (
 	teamParams: CreateTeamType
 ): Promise<TeamBaseType> => {
-	const response = await apiClient.post('/teams', {
+	const response = await apiClient.post('/teams/', {
 		name: teamParams.name,
 		team_members: teamParams.teamMembers
 	});
 	return response.data;
 };
 
+// fetch teams of logged-in user
+export const fetchMyTeams = async (): Promise<TeamWithTeamMembersType[]> => {
+	const response = await apiClient.get('/teams/');
+	return response.data;
+};
