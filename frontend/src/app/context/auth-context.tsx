@@ -8,7 +8,7 @@ import React, {
 	useEffect,
 } from 'react';
 import axios, { AxiosError } from 'axios';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import apiClient from '@/lib/axios';
@@ -40,6 +40,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 	const [name, setName] = useState<string | null>(null);
 	const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 	const router = useRouter();
+	const searchParams = useSearchParams();
 
 	useEffect(() => {
 		const tokenFromStorage = sessionStorage.getItem('token');
@@ -80,7 +81,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 			toast(`Welcome back ${response.data.name}!`, {
 				type: 'success',
 			});
-			router.push('/');
+			router.push(searchParams.get('redirect') ?? '/');
 		} catch (error) {
 			if (error instanceof AxiosError && error.response) {
 				// Checking if the error is AxiosError and has a `response` property
