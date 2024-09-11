@@ -1,8 +1,11 @@
 from fastapi import APIRouter, HTTPException
+from pydantic import ValidationError
 from sqlalchemy.exc import IntegrityError
 from starlette import status
 
 from typing import List
+
+from app.core.config import settings
 from app.dependencies.pagination_dependency import PageParamsDep
 from app.dependencies.db_dependency import DBSessionDep
 from app.dependencies.get_current_user import CurrentUserDep
@@ -11,6 +14,7 @@ from app.schemas.superhero import (
     SuperheroBaseSchema,
     SuperheroDetailsSchema,
     FavoriteSuperheroResponseSchema,
+    SuperheroSuggestionRequest,
 )
 from app.services.superhero import (
     get_superheroes,
@@ -19,6 +23,7 @@ from app.services.superhero import (
     create_favorite_superhero,
     delete_favorite_superhero,
     fetch_favorite_superhero_by_superhero_id,
+    get_superhero_team_suggestion,
 )
 
 superhero_router = APIRouter(prefix="/superheroes", tags=["Superhero"])
@@ -98,6 +103,39 @@ def get_favorite_superhero_by_superhero_id(
         )
 
     return favorite_superhero
+
+
+@superhero_router.get(
+    "/suggest", status_code=status.HTTP_200_OK, response_model=List[SuperheroBaseSchema]
+)
+def get_superheroes_suggestions(
+    current_user: CurrentUserDep,
+    db: DBSessionDep,
+    good_pct: float = 0.5,
+    bad_pct: float = 0.3,
+    neutral_pct: float = 0.1,
+    dash_pct: float = 0.1,
+):
+    # Validate parameters
+    try:
+        SuperheroSuggestionRequest(
+            total=settings.max_superhero_team_members,
+            good_pct=good_pct,
+            bad_pct=bad_pct,
+            neutral_pct=neutral_pct,
+            dash_pct=dash_pct,
+        )
+    except ValidationError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+    return get_superhero_team_suggestion(
+        db,
+        total=settings.max_superhero_team_members,
+        good_pct=good_pct,
+        bad_pct=bad_pct,
+        neutral_pct=neutral_pct,
+        dash_pct=dash_pct,
+    )
 
 
 @superhero_router.get(
