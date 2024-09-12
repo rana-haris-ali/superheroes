@@ -5,6 +5,7 @@ import {
 	fetchFavoriteSuperheroById,
 	fetchFavoriteSuperheroes,
 	fetchMyTeams,
+	fetchTeams,
 	fetchSuperheroById,
 	fetchSuperheroes,
 	removeFavoriteSuperhero,
@@ -39,10 +40,20 @@ export const useSuperheroes = (
 };
 
 // Hook to fetch teams of the logged-in user
-export const useMyTeams = () => {
+export const useMyTeams = (searchText: string | null = null, enabled: boolean = true) => {
 	return useQuery({
-		queryKey: ['my-teams'],
-		queryFn: fetchMyTeams,
+		queryKey: ['my-teams', searchText],
+		queryFn: () => fetchMyTeams(searchText),
+		enabled
+	})
+};
+
+// Hook to fetch all teams
+export const useAllTeams = (searchText: string | null = null, enabled: boolean = true) => {
+	return useQuery({
+		queryKey: ['all-teams', searchText],
+		queryFn: () => fetchTeams(searchText),
+		enabled
 	})
 };
 

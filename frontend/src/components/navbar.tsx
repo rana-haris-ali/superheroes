@@ -71,7 +71,7 @@ export default function Navbar() {
 								</DropdownMenuItem>
 								<DropdownMenuItem>
 									<Link
-										href='#'
+										href='/teams/fight'
 										className='flex items-center gap-2'
 										prefetch={false}
 									>
@@ -163,7 +163,7 @@ export default function Navbar() {
 						</DropdownMenuItem>
 						<DropdownMenuItem>
 							<Link
-								href='#'
+								href='/teams/fight'
 								className='flex items-center gap-2'
 								prefetch={false}
 							>

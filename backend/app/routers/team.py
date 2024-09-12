@@ -5,7 +5,7 @@ from starlette import status
 
 from app.dependencies.db_dependency import DBSessionDep
 from app.schemas.team import CreateTeamSchema, TeamBaseSchema, TeamWithMembersSchema
-from app.services.team import create_new_team, get_teams_by_creator_id
+from app.services.team import create_new_team, get_teams_and_average_attributes
 from app.dependencies.get_current_user import CurrentUserDep
 
 team_router = APIRouter(prefix="/teams", tags=["Team"])
@@ -14,10 +14,18 @@ team_router = APIRouter(prefix="/teams", tags=["Team"])
 @team_router.get(
     "/",
     status_code=status.HTTP_200_OK,
-    # response_model=List[TeamWithMembersSchema]
+    response_model=List[TeamWithMembersSchema]
 )
-def get_my_teams(current_user: CurrentUserDep, db: DBSessionDep):
-    return get_teams_by_creator_id(current_user.id, db)
+def get_my_teams(current_user: CurrentUserDep,  db: DBSessionDep, search_query: str = None):
+    return get_teams_and_average_attributes(db, search_query, current_user.id)
+
+@team_router.get(
+    "/all",
+    status_code=status.HTTP_200_OK,
+    response_model=List[TeamWithMembersSchema]
+)
+def search_teams(current_user: CurrentUserDep, db: DBSessionDep, search_query: str):
+    return get_teams_and_average_attributes(db, search_query)
 
 
 @team_router.post(
