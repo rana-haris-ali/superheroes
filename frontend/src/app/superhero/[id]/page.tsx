@@ -20,12 +20,10 @@ import { toast } from 'react-toastify';
 import { Heart } from 'lucide-react';
 import { useAuth } from '@/app/context/auth-context';
 import { useRouter, usePathname } from 'next/navigation';
-import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 
 export default function Page({ params }: { params: { id: string } }) {
 	const superheroId = parseInt(params.id);
-	const queryClient = useQueryClient();
 	const [isLiked, setIsLiked] = useState(false);
 	const { isAuthenticated } = useAuth();
 	const router = useRouter();

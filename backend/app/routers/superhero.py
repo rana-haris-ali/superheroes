@@ -9,12 +9,16 @@ from app.core.config import settings
 from app.dependencies.pagination_dependency import PageParamsDep
 from app.dependencies.db_dependency import DBSessionDep
 from app.dependencies.get_current_user import CurrentUserDep
+from app.dependencies.get_admin_user import AdminUserDep
 from app.schemas.pagination import PagedResponseSchema
 from app.schemas.superhero import (
     SuperheroBaseSchema,
     SuperheroDetailsSchema,
     FavoriteSuperheroResponseSchema,
-    SuperheroSuggestionRequest, CreateFavoriteSuperheroSchema,
+    SuperheroSuggestionRequest,
+    CreateFavoriteSuperheroSchema,
+    SuperheroAttributeSortingSchema,
+    SuperheroUpdateSchema,
 )
 from app.services.superhero import (
     get_superheroes,
@@ -24,6 +28,7 @@ from app.services.superhero import (
     delete_favorite_superhero,
     fetch_favorite_superhero_by_superhero_id,
     get_superhero_team_suggestion,
+    update_superhero_by_id,
 )
 
 superhero_router = APIRouter(prefix="/superheroes", tags=["Superhero"])
@@ -34,7 +39,9 @@ superhero_router = APIRouter(prefix="/superheroes", tags=["Superhero"])
     status_code=status.HTTP_200_OK,
     response_model=PagedResponseSchema[SuperheroBaseSchema],
 )
-def get_all_superheroes(db: DBSessionDep, page_params: PageParamsDep, search_query: str = None):
+def get_all_superheroes(
+    db: DBSessionDep, page_params: PageParamsDep, search_query: str = None
+):
     return get_superheroes(db, page_params, search_query)
 
 
@@ -55,7 +62,9 @@ def get_favorite_superheroes(db: DBSessionDep, current_user: CurrentUserDep):
     response_model=FavoriteSuperheroResponseSchema,
 )
 def add_favorite_superhero(
-    favorite_superhero: CreateFavoriteSuperheroSchema, db: DBSessionDep, current_user: CurrentUserDep
+    favorite_superhero: CreateFavoriteSuperheroSchema,
+    db: DBSessionDep,
+    current_user: CurrentUserDep,
 ):
     try:
         favorite_superhero = create_favorite_superhero(
@@ -152,3 +161,18 @@ def get_superhero(superhero_id: int, db: DBSessionDep):
         )
 
     return superhero
+
+
+@superhero_router.patch(
+    "/{superhero_id}",
+    status_code=status.HTTP_200_OK,
+    response_model=SuperheroBaseSchema,
+)
+async def update_superhero(
+    superhero_id: int,
+    update_data: SuperheroUpdateSchema,
+    admin_user: AdminUserDep,
+    db: DBSessionDep,
+):
+    # Fetch the superhero to update
+    return update_superhero_by_id(superhero_id, update_data, db)

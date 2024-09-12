@@ -1,6 +1,6 @@
 import { Paginated, PaginationParams } from '@/types/pagination';
 import apiClient from './axios'; // Import the Axios instance
-import { SuperheroBaseType, SuperheroDetailsType, SuperheroSuggestionParams } from '@/types/superhero'
+import { SuperheroBaseType, SuperheroDetailsType, SuperheroSuggestionParams, SuperheroUpdatePayload } from '@/types/superhero'
 import { UserSignupParams } from '@/types/user';
 import { CreateTeamType, TeamBaseType, TeamWithTeamMembersType } from '@/types/team';
 
@@ -88,5 +88,13 @@ export const removeFavoriteSuperhero = async (superheroId: number): Promise<{ su
 			superhero_id: superheroId
 		}
 	});
+	return response.data;
+};
+
+export const updateSuperhero = async (
+	superheroId: number,
+	updatePayload: SuperheroUpdatePayload
+): Promise<SuperheroBaseType> => {
+	const response = await apiClient.patch(`/superheroes/${superheroId}`, updatePayload);
 	return response.data;
 };

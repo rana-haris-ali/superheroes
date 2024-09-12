@@ -8,16 +8,17 @@ import {
 	fetchSuperheroById,
 	fetchSuperheroes,
 	removeFavoriteSuperhero,
-	suggestSuperheroesForTeam
+	suggestSuperheroesForTeam,
+	updateSuperhero
 } from './api';
 import { PaginationParams } from '@/types/pagination';
 import { CreateTeamType } from '@/types/team';
-import { SuperheroSuggestionParams } from '@/types/superhero';
+import { SuperheroSuggestionParams, SuperheroUpdatePayload } from '@/types/superhero';
 
 // Hook to fetch superhero by id
 export const useSingleSuperhero = ({ id }: { id: number }) => {
 	return useQuery({
-		queryKey: ['single-superhero'],
+		queryKey: ['single-superhero', id],
 		queryFn: () => fetchSuperheroById({ id }),
 	})
 };
@@ -112,4 +113,12 @@ export const useRemoveFavoriteSuperhero = (superheroId: number) => {
 		mutationFn: () => removeFavoriteSuperhero(superheroId),
 		mutationKey: [`favorite-superhero-${superheroId}`],
 	})
+};
+
+export const useUpdateSuperhero = (superheroId: number, updatePayload: SuperheroUpdatePayload) => {
+	return useMutation({
+		mutationFn: () => updateSuperhero(superheroId, updatePayload),
+		mutationKey: ['single-superhero', 'superheroes', superheroId],
+	}
+	);
 };

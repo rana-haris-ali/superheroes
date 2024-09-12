@@ -7,7 +7,7 @@ from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
 from app.models import Superhero, User, FavoriteSuperhero
 from app.schemas.pagination import PagedResponseSchema, PageParamsSchema
-from app.schemas.superhero import SuperheroBaseSchema
+from app.schemas.superhero import SuperheroBaseSchema, SuperheroUpdateSchema
 from app.utils.pagination import paginate
 from sqlalchemy import or_
 
@@ -183,3 +183,22 @@ def get_superhero_team_suggestion(
     shuffle(suggested_superheroes)  # Shuffle the result to randomize the order
 
     return suggested_superheroes
+
+def update_superhero_by_id(superhero_id: int, superhero_update_data: SuperheroUpdateSchema,db:Session):
+    # Fetch the superhero to update
+        superhero = get_superhero_by_id(superhero_id, db)
+
+    if not superhero:
+        raise HTTPException(status_code=404, detail="Superhero not found")
+
+    # Update the superhero's attributes
+    update_data_dict = superhero_update_data.model_dump(exclude_unset=True)
+    for key, value in update_data_dict.items():
+        if hasattr(superhero, key):
+            setattr(superhero, key, value)
+
+    # Commit the changes to the database
+    db.commit()
+    db.refresh(superhero)
+
+    return superhero
