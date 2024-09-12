@@ -16,7 +16,9 @@ from app.schemas.superhero import (
     SuperheroDetailsSchema,
     FavoriteSuperheroResponseSchema,
     SuperheroUpdateSchema,
-    SuperheroSuggestionRequest, CreateFavoriteSuperheroSchema, SuperheroAttributeSortingSchema,
+    SuperheroSuggestionRequest,
+    CreateFavoriteSuperheroSchema,
+    SuperheroAttributeSortingSchema,
 )
 from app.services.superhero import (
     get_superheroes,
@@ -122,7 +124,7 @@ def get_superheroes_suggestions(
     bad_pct: float = 0.3,
     neutral_pct: float = 0.1,
     dash_pct: float = 0.1,
-    sort: str = None
+    sort: str = None,
 ):
     # Validate parameters
     try:
@@ -145,7 +147,7 @@ def get_superheroes_suggestions(
         bad_pct=bad_pct,
         neutral_pct=neutral_pct,
         dash_pct=dash_pct,
-        sort=sort
+        sort=sort,
     )
 
 

@@ -32,7 +32,7 @@ import Image from 'next/image';
 import { useEffect } from 'react';
 import { JwtPayload as OriginalJwtPayload, jwtDecode } from 'jwt-decode';
 import { attributes } from '@/lib/superhero-attributes';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import SingleSuperheroSkeleton from '@/components/single-superhero-skeleton';
 
 // Extend the JwtPayload type

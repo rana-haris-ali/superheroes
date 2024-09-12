@@ -98,13 +98,19 @@ def fetch_favorite_superhero_by_superhero_id(
 
 
 # Helper function to fetch superheroes by alignment with requested sorting or random
-def get_superheroes_by_alignment(db: Session, alignment: str, limit: int, sort: str = None):
+def get_superheroes_by_alignment(
+    db: Session, alignment: str, limit: int, sort: str = None
+):
     query = db.query(Superhero).filter(Superhero.alignment == alignment)
 
     if sort:
-        query = query.order_by(desc(getattr(Superhero, sort)))  # Sort by the provided field in descending order
+        query = query.order_by(
+            desc(getattr(Superhero, sort))
+        )  # Sort by the provided field in descending order
     else:
-        query = query.order_by(func.random())  # Randomize the result if no sort is provided
+        query = query.order_by(
+            func.random()
+        )  # Randomize the result if no sort is provided
 
     return query.limit(limit).all()
 
@@ -156,7 +162,7 @@ def get_superhero_team_suggestion(
     bad_pct: float,  # Bad percentage
     neutral_pct: float,  # Neutral percentage
     dash_pct: float,  # Dash percentage
-    sort: str = None  # sort by column (random by default)
+    sort: str = None,  # sort by column (random by default)
 ) -> List[Type[Superhero]]:
 
     # Calculate the number of superheroes for each alignment
@@ -186,9 +192,12 @@ def get_superhero_team_suggestion(
 
     return suggested_superheroes
 
-def update_superhero_by_id(superhero_id: int, superhero_update_data: SuperheroUpdateSchema,db:Session):
+
+def update_superhero_by_id(
+    superhero_id: int, superhero_update_data: SuperheroUpdateSchema, db: Session
+):
     # Fetch the superhero to update
-        superhero = get_superhero_by_id(superhero_id, db)
+    superhero = get_superhero_by_id(superhero_id, db)
 
     if not superhero:
         raise HTTPException(status_code=404, detail="Superhero not found")

@@ -32,7 +32,9 @@ def create_new_team(
 
 
 def get_teams_and_average_attributes(
-     db: Session, search_query, creator_id: int = None,
+    db: Session,
+    search_query,
+    creator_id: int = None,
 ) -> List[TeamWithMembersSchema]:
     query = db.query(Team)
 

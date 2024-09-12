@@ -12,17 +12,16 @@ team_router = APIRouter(prefix="/teams", tags=["Team"])
 
 
 @team_router.get(
-    "/",
-    status_code=status.HTTP_200_OK,
-    response_model=List[TeamWithMembersSchema]
+    "/", status_code=status.HTTP_200_OK, response_model=List[TeamWithMembersSchema]
 )
-def get_my_teams(current_user: CurrentUserDep,  db: DBSessionDep, search_query: str = None):
+def get_my_teams(
+    current_user: CurrentUserDep, db: DBSessionDep, search_query: str = None
+):
     return get_teams_and_average_attributes(db, search_query, current_user.id)
 
+
 @team_router.get(
-    "/all",
-    status_code=status.HTTP_200_OK,
-    response_model=List[TeamWithMembersSchema]
+    "/all", status_code=status.HTTP_200_OK, response_model=List[TeamWithMembersSchema]
 )
 def search_teams(current_user: CurrentUserDep, db: DBSessionDep, search_query: str):
     return get_teams_and_average_attributes(db, search_query)

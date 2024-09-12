@@ -115,4 +115,3 @@ class SuperheroUpdateSchema(BaseModel):
     durability: Optional[int] = Field(None, ge=0, le=100)
     power: Optional[int] = Field(None, ge=0, le=100)
     combat: Optional[int] = Field(None, ge=0, le=100)
-
