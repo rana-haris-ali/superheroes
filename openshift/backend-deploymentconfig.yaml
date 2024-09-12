@@ -1,0 +1,44 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  labels:
+    io.kompose.service: backend
+  name: backend
+spec:
+  replicas: 1
+  selector:
+    io.kompose.service: backend
+  template:
+    metadata:
+      labels:
+        io.kompose.service: backend
+    spec:
+      containers:
+        - env:
+            - name: ACCESS_TOKEN_ALGORITHM
+              value: HS256
+            - name: ACCESS_TOKEN_EXPIRE_MINUTES
+              value: "30"
+            - name: ACCESS_TOKEN_SECRET_KEY
+              value: f8fb0618c9333eeb7441a2fc6c3d34a33cb0cdf2ef3246bed8c6ee5535006416
+            - name: DATABASE_URL
+              value: mysql+pymysql://root:rootpassword@mysql/superheroes
+            - name: MAX_SUPERHERO_TEAM_MEMBERS
+              value: "10"
+          image: ' '
+          name: backend
+          ports:
+            - containerPort: 8000
+              protocol: TCP
+      restartPolicy: Always
+  test: false
+  triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+          - backend
+        from:
+          kind: ImageStreamTag
+          name: backend:latest
+      type: ImageChange

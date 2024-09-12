@@ -1,0 +1,38 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  labels:
+    io.kompose.service: frontend
+  name: frontend
+spec:
+  replicas: 1
+  selector:
+    io.kompose.service: frontend
+  template:
+    metadata:
+      labels:
+        io.kompose.service: frontend
+    spec:
+      containers:
+        - env:
+            - name: NEXT_PUBLIC_BACKEND_BASE_URL
+              value: http://backend:8000
+            - name: NEXT_PUBLIC_MAX_TEAM_MEMBERS
+              value: "10"
+          image: ' '
+          name: frontend
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+      restartPolicy: Always
+  test: false
+  triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+          - frontend
+        from:
+          kind: ImageStreamTag
+          name: frontend:latest
+      type: ImageChange

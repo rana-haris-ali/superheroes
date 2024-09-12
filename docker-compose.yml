@@ -1,0 +1,43 @@
+services:
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "3000:3000"
+    #! WE SHOULD NEVER USE HARDCODED ENV VARS, THIS IS FOR DEMO ONLY
+    environment:
+      - NEXT_PUBLIC_BACKEND_BASE_URL=http://backend:8000
+      - NEXT_PUBLIC_MAX_TEAM_MEMBERS=10
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "8000:8000"
+    #! WE SHOULD NEVER USE HARDCODED ENV VARS, THIS IS FOR DEMO ONLY
+    environment:
+      - DATABASE_URL=mysql+pymysql://root:rootpassword@mysql/superheroes
+      - ACCESS_TOKEN_SECRET_KEY=f8fb0618c9333eeb7441a2fc6c3d34a33cb0cdf2ef3246bed8c6ee5535006416
+      - ACCESS_TOKEN_ALGORITHM=HS256
+      - ACCESS_TOKEN_EXPIRE_MINUTES=30
+      - MAX_SUPERHERO_TEAM_MEMBERS=10
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    #! WE SHOULD NEVER USE HARDCODED ENV VARS, THIS IS FOR DEMO ONLY
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: superheroes
+      MYSQL_PASSWORD: 1234
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./start.sql:/docker-entrypoint-initdb.d/start.sql
+
+volumes:
+  mysql-data:
