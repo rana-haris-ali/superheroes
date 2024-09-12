@@ -21,7 +21,7 @@ export default function ReactQueryProvider({
 	return (
 		<QueryClientProvider client={queryClient}>
 			{/* TODO remove when going to production */}
-			<ReactQueryDevtools />
+			{/* <ReactQueryDevtools /> */}
 			{children}
 		</QueryClientProvider>
 	);
