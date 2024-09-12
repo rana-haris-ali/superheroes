@@ -14,7 +14,7 @@ from app.schemas.superhero import (
     SuperheroBaseSchema,
     SuperheroDetailsSchema,
     FavoriteSuperheroResponseSchema,
-    SuperheroSuggestionRequest,
+    SuperheroSuggestionRequest, CreateFavoriteSuperheroSchema,
 )
 from app.services.superhero import (
     get_superheroes,
@@ -55,11 +55,11 @@ def get_favorite_superheroes(db: DBSessionDep, current_user: CurrentUserDep):
     response_model=FavoriteSuperheroResponseSchema,
 )
 def add_favorite_superhero(
-    superhero_id: int, db: DBSessionDep, current_user: CurrentUserDep
+    favorite_superhero: CreateFavoriteSuperheroSchema, db: DBSessionDep, current_user: CurrentUserDep
 ):
     try:
         favorite_superhero = create_favorite_superhero(
-            current_user.id, superhero_id, db
+            current_user.id, favorite_superhero.id, db
         )
     except IntegrityError:
         raise HTTPException(

@@ -8,21 +8,76 @@ import {
 	CardTitle,
 } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { useSingleSuperhero } from '@/lib/react-query-hooks';
+import {
+	useCreateFavoriteSuperhero,
+	useFavoriteSuperheroById,
+	useRemoveFavoriteSuperhero,
+	useSingleSuperhero,
+} from '@/lib/react-query-hooks';
 import Image from 'next/image';
 import Skeleton from '@/components/single-superhero-skeleton';
 import { toast } from 'react-toastify';
+import { Heart } from 'lucide-react';
+import { useAuth } from '@/app/context/auth-context';
+import { useRouter, usePathname } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
 
 export default function Page({ params }: { params: { id: string } }) {
+	const superheroId = parseInt(params.id);
+	const queryClient = useQueryClient();
+	const [isLiked, setIsLiked] = useState(false);
+	const { isAuthenticated } = useAuth();
+	const router = useRouter();
+	const pathname = usePathname();
 	const { data, error, isLoading } = useSingleSuperhero({
-		id: parseInt(params.id),
+		id: superheroId,
 	});
+
+	const { data: isLikedResponse } = useFavoriteSuperheroById({
+		superheroId,
+		enabled: isAuthenticated,
+	});
+
+	const createFavoriteSuperheroMutation =
+		useCreateFavoriteSuperhero(superheroId);
+
+	const removeFavoriteSuperheroMutation =
+		useRemoveFavoriteSuperhero(superheroId);
+
+	// set state on response from server
+	useEffect(() => {
+		if (isLikedResponse) {
+			setIsLiked(true);
+		}
+	}, [isLikedResponse]);
 
 	if (isLoading) return <Skeleton />;
 
 	if (error) {
 		toast(error.message, { type: 'error' });
 	}
+
+	const handleHeartClick = () => {
+		if (!isAuthenticated) {
+			return router.push(`/login?redirect=${pathname}`);
+			
+		}
+
+		if (isLiked) {
+			removeFavoriteSuperheroMutation.mutate(undefined, {
+				onSuccess: () => {
+					setIsLiked(false);
+				},
+			});
+		} else {
+			createFavoriteSuperheroMutation.mutate(undefined, {
+				onSuccess: () => {
+					setIsLiked(true);
+				},
+			});
+		}
+	};
 
 	return (
 		<div className='flex flex-col w-full min-h-screen'>
@@ -42,6 +97,18 @@ export default function Page({ params }: { params: { id: string } }) {
 						<CardDescription className='text-muted-foreground'>
 							{data?.publisher}
 						</CardDescription>
+						<button
+							onClick={handleHeartClick}
+							className='focus:outline-none'
+							aria-label={isLiked ? 'Unlike' : 'Like'}
+						>
+							<Heart
+								className={`w-6 h-6 ${
+									isLiked ? 'text-red-500 fill-current' : 'text-gray-400'
+								} 
+                          transition-colors duration-200 ease-in-out hover:text-red-400`}
+							/>
+						</button>
 					</CardHeader>
 					<CardContent className='grid grid-cols-1 md:grid-cols-2 gap-4 mt-4'>
 						<div className='flex flex-col items-start'>

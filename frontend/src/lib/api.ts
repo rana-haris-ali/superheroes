@@ -61,3 +61,32 @@ export const suggestSuperheroesForTeam = async (superheroSuggestionParams: Super
 	});
 	return response.data;
 };
+
+export const fetchFavoriteSuperheroes = async (): Promise<SuperheroBaseType[]> => {
+	const response = await apiClient.get('/superheroes/favorites');
+	return response.data;
+};
+
+// return superhero if liked by the user
+export const fetchFavoriteSuperheroById = async (superheroId: number): Promise<SuperheroBaseType> => {
+	const response = await apiClient.get(`/superheroes/favorites/${superheroId}`);
+	return response.data;
+};
+
+// create favorite superhero
+export const createFavoriteSuperhero = async (superheroId: number): Promise<{ superhero_id: number }> => {
+	const response = await apiClient.post('/superheroes/favorites', {
+		id: superheroId
+	});
+	return response.data;
+};
+
+// delete favorite superhero
+export const removeFavoriteSuperhero = async (superheroId: number): Promise<{ superhero_id: number }> => {
+	const response = await apiClient.delete('/superheroes/favorites', {
+		params: {
+			superhero_id: superheroId
+		}
+	});
+	return response.data;
+};
