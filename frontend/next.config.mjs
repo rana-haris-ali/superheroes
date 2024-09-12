@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+	output: 'standalone',
 	images: {
 		remotePatterns: [
 			{
@@ -11,8 +12,8 @@ const nextConfig = {
 		],
 	},
 	experimental: {
-    missingSuspenseWithCSRBailout: false,
-  },
+		missingSuspenseWithCSRBailout: false,
+	},
 };
 
 export default nextConfig;
