@@ -82,3 +82,7 @@ class SuperheroSuggestionRequest(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class CreateFavoriteSuperheroSchema(BaseModel):
+    id: int

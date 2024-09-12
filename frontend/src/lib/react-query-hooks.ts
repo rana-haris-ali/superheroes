@@ -1,5 +1,15 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { createTeam, fetchMyTeams, fetchSuperheroById, fetchSuperheroes, suggestSuperheroesForTeam } from './api';
+import {
+	createFavoriteSuperhero,
+	createTeam,
+	fetchFavoriteSuperheroById,
+	fetchFavoriteSuperheroes,
+	fetchMyTeams,
+	fetchSuperheroById,
+	fetchSuperheroes,
+	removeFavoriteSuperhero,
+	suggestSuperheroesForTeam
+} from './api';
 import { PaginationParams } from '@/types/pagination';
 import { CreateTeamType } from '@/types/team';
 import { SuperheroSuggestionParams } from '@/types/superhero';
@@ -55,7 +65,51 @@ export const useTeamSuggestion = ({
 ) => {
 	return useQuery({
 		queryFn: () => suggestSuperheroesForTeam(superheroSuggestionParams),
-		queryKey: ['create-team', superheroSuggestionParams],
+		queryKey: ['suggest-team', superheroSuggestionParams],
 		enabled
+	})
+};
+
+// Hook to fetch favorite superheroes of user
+export const useFavoriteSuperheroes = ({
+	enabled = false
+}: {
+	enabled: boolean
+}) => {
+	return useQuery({
+		queryKey: ['favorite-superheroes'],
+		queryFn: fetchFavoriteSuperheroes,
+		enabled
+	})
+};
+
+// Hook to fetch superhero if liked by the user
+export const useFavoriteSuperheroById = ({
+	superheroId,
+	enabled = false
+}: {
+	superheroId: number,
+	enabled: boolean
+}) => {
+	return useQuery({
+		queryKey: [`favorite-superhero-${superheroId}`],
+		queryFn: () => fetchFavoriteSuperheroById(superheroId),
+		enabled
+	})
+};
+
+// Hook to create a team
+export const useCreateFavoriteSuperhero = (superheroId: number) => {
+	return useMutation({
+		mutationFn: () => createFavoriteSuperhero(superheroId),
+		mutationKey: [`favorite-superhero-${superheroId}`],
+	})
+};
+
+// Hook to create a team
+export const useRemoveFavoriteSuperhero = (superheroId: number) => {
+	return useMutation({
+		mutationFn: () => removeFavoriteSuperhero(superheroId),
+		mutationKey: [`favorite-superhero-${superheroId}`],
 	})
 };
