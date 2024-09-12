@@ -56,10 +56,7 @@ export default function EditSuperhero({ params }: { params: { id: string } }) {
 	const superheroId = parseInt(params.id);
 	const { token } = useAuth();
 	const router = useRouter();
-	const {
-		data: superhero,
-		isLoading,
-	} = useSingleSuperhero({
+	const { data: superhero, isLoading } = useSingleSuperhero({
 		id: superheroId,
 	});
 
@@ -96,7 +93,11 @@ export default function EditSuperhero({ params }: { params: { id: string } }) {
 	}, [superhero, form]);
 
 	useEffect(() => {
-		if (!token || !jwtDecode<JwtPayload>(token)!.is_admin) {
+		if (!token) return;
+
+		const decodedToken = jwtDecode<JwtPayload>(token);
+
+		if (!decodedToken.is_admin) {
 			toast('Only admins can access this page', { type: 'error' });
 			router.push(`/login`);
 		}
