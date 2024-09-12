@@ -9,7 +9,7 @@ from app.models import Superhero, User, FavoriteSuperhero
 from app.schemas.pagination import PagedResponseSchema, PageParamsSchema
 from app.schemas.superhero import SuperheroBaseSchema, SuperheroUpdateSchema
 from app.utils.pagination import paginate
-from sqlalchemy import or_
+from sqlalchemy import or_, desc
 
 
 def get_superheroes(
@@ -97,15 +97,16 @@ def fetch_favorite_superhero_by_superhero_id(
     return superhero
 
 
-# Helper function to fetch superheroes by alignment with random order
-def get_superheroes_by_alignment(db: Session, alignment: str, limit: int):
-    return (
-        db.query(Superhero)
-        .filter(Superhero.alignment == alignment)
-        .order_by(func.random())  # Randomize the result
-        .limit(limit)
-        .all()
-    )
+# Helper function to fetch superheroes by alignment with requested sorting or random
+def get_superheroes_by_alignment(db: Session, alignment: str, limit: int, sort: str = None):
+    query = db.query(Superhero).filter(Superhero.alignment == alignment)
+
+    if sort:
+        query = query.order_by(desc(getattr(Superhero, sort)))  # Sort by the provided field in descending order
+    else:
+        query = query.order_by(func.random())  # Randomize the result if no sort is provided
+
+    return query.limit(limit).all()
 
 
 # Calculate the counts based on percentage, then adjust if needed
@@ -155,6 +156,7 @@ def get_superhero_team_suggestion(
     bad_pct: float,  # Bad percentage
     neutral_pct: float,  # Neutral percentage
     dash_pct: float,  # Dash percentage
+    sort: str = None  # sort by column (random by default)
 ) -> List[Type[Superhero]]:
 
     # Calculate the number of superheroes for each alignment
@@ -166,10 +168,10 @@ def get_superhero_team_suggestion(
 
     # TODO: parallelize the DB calls
     # Retrieve the results for each alignment
-    good_heroes = get_superheroes_by_alignment(db, "good", good_count)
-    bad_heroes = get_superheroes_by_alignment(db, "bad", bad_count)
-    neutral_heroes = get_superheroes_by_alignment(db, "neutral", neutral_count)
-    dash_heroes = get_superheroes_by_alignment(db, "-", dash_count)
+    good_heroes = get_superheroes_by_alignment(db, "good", good_count, sort)
+    bad_heroes = get_superheroes_by_alignment(db, "bad", bad_count, sort)
+    neutral_heroes = get_superheroes_by_alignment(db, "neutral", neutral_count, sort)
+    dash_heroes = get_superheroes_by_alignment(db, "-", dash_count, sort)
 
     # Combine superheroes into a single list
     suggested_superheroes = good_heroes + bad_heroes + neutral_heroes + dash_heroes

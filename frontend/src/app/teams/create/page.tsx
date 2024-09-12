@@ -46,6 +46,7 @@ export default function CreateTeam() {
 	const [teamName, setTeamName] = useState('');
 	const [searchTerm, setSearchTerm] = useState('');
 	const [recommendationType, setRecommendationType] = useState('balanced');
+	const [sortingPriority, setSortingPriority] = useState('');
 	const [isRecommendationRequested, setRecommendationRequested] =
 		useState(false);
 	const [searchTermDebounced] = useDebounce(searchTerm, 500);
@@ -68,6 +69,7 @@ export default function CreateTeam() {
 	const { data: recommendedSuperheros } = useTeamSuggestion({
 		superheroSuggestionParams:
 			TeamTypeToValuesMapper[recommendationType ?? 'balanced'],
+		sortingPriority: sortingPriority ?? undefined,
 		enabled: isRecommendationRequested,
 	});
 
@@ -289,13 +291,20 @@ export default function CreateTeam() {
 							</DialogDescription>
 							<Select onValueChange={setRecommendationType}>
 								<SelectTrigger className='w-full my-4'>
-									<SelectValue placeholder='Select team generation type' />
+									<SelectValue placeholder='Select team alignment' />
 								</SelectTrigger>
 								<SelectContent>
 									<SelectItem value='balanced'>Balanced Team</SelectItem>
 									<SelectItem value='good'>Good Team</SelectItem>
 									<SelectItem value='bad'>Bad Team</SelectItem>
 									<SelectItem value='neutral'>Neutral Team</SelectItem>
+								</SelectContent>
+							</Select>
+							<Select onValueChange={setSortingPriority}>
+								<SelectTrigger className='w-full my-4'>
+									<SelectValue placeholder='Select priority' />
+								</SelectTrigger>
+								<SelectContent>
 									<SelectItem value='intelligence'>Intelligent Team</SelectItem>
 									<SelectItem value='strength'>Strong Team</SelectItem>
 									<SelectItem value='speed'>Fast Team</SelectItem>

@@ -69,15 +69,17 @@ export const useCreateTeam = (teamParams: CreateTeamType) => {
 // Hook to fetch superhero suggestion for a team
 export const useTeamSuggestion = ({
 	superheroSuggestionParams,
+	sortingPriority = undefined,
 	enabled = false
 }: {
 	superheroSuggestionParams: SuperheroSuggestionParams,
+	sortingPriority: string | undefined,
 	enabled: boolean
 }
 ) => {
 	return useQuery({
-		queryFn: () => suggestSuperheroesForTeam(superheroSuggestionParams),
-		queryKey: ['suggest-team', superheroSuggestionParams],
+		queryFn: () => suggestSuperheroesForTeam(superheroSuggestionParams, sortingPriority),
+		queryKey: ['suggest-team', superheroSuggestionParams, sortingPriority],
 		enabled
 	})
 };

@@ -11,15 +11,7 @@ import { TeamWithTeamMembersType } from '@/types/team';
 import { SuperheroAttributesType } from '@/types/superhero';
 import { useAuth } from '@/app/context/auth-context';
 import { usePathname, useRouter } from 'next/navigation';
-
-const attributes = [
-	'intelligence',
-	'strength',
-	'speed',
-	'durability',
-	'power',
-	'combat',
-];
+import { attributes } from '@/lib/superhero-attributes';
 
 function TeamCard({
 	team,
