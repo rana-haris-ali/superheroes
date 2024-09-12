@@ -18,7 +18,7 @@ export default function Navbar() {
 	const { name, isAuthenticated, logout } = useAuth();
 
 	return (
-		<header className='flex h-20 w-full shrink-0 items-center px-4 md:px-6  bg-[#F0F0F0] dark:bg-[#1F1F1F]'>
+		<header className='flex h-20 w-full shrink-0 items-center px-4 md:px-6  bg-gray-400 dark:bg-[#0c2e2e] shadow-lg shadow-zinc-400 dark:shadow-zinc-800'>
 			<Sheet>
 				<SheetTrigger asChild>
 					<Button variant='outline' size='icon' className='lg:hidden'>
@@ -58,15 +58,6 @@ export default function Navbar() {
 										prefetch={false}
 									>
 										Create Team
-									</Link>
-								</DropdownMenuItem>
-								<DropdownMenuItem>
-									<Link
-										href='#'
-										className='flex items-center gap-2'
-										prefetch={false}
-									>
-										Team Recommendation
 									</Link>
 								</DropdownMenuItem>
 								<DropdownMenuItem>
@@ -150,15 +141,6 @@ export default function Navbar() {
 								prefetch={false}
 							>
 								Create Team
-							</Link>
-						</DropdownMenuItem>
-						<DropdownMenuItem>
-							<Link
-								href='#'
-								className='flex items-center gap-2'
-								prefetch={false}
-							>
-								Team Recommendation
 							</Link>
 						</DropdownMenuItem>
 						<DropdownMenuItem>
