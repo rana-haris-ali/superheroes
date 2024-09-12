@@ -1,6 +1,6 @@
 import { Paginated, PaginationParams } from '@/types/pagination';
 import apiClient from './axios'; // Import the Axios instance
-import { SuperheroBaseType, SuperheroDetailsType } from '@/types/superhero'
+import { SuperheroBaseType, SuperheroDetailsType, SuperheroSuggestionParams } from '@/types/superhero'
 import { UserSignupParams } from '@/types/user';
 import { CreateTeamType, TeamBaseType, TeamWithTeamMembersType } from '@/types/team';
 
@@ -50,5 +50,14 @@ export const createTeam = async (
 // fetch teams of logged-in user
 export const fetchMyTeams = async (): Promise<TeamWithTeamMembersType[]> => {
 	const response = await apiClient.get('/teams/');
+	return response.data;
+};
+
+export const suggestSuperheroesForTeam = async (superheroSuggestionParams: SuperheroSuggestionParams): Promise<SuperheroBaseType[]> => {
+	const response = await apiClient.get('/superheroes/suggest/', {
+		params: {
+			...superheroSuggestionParams
+		}
+	});
 	return response.data;
 };

@@ -9,10 +9,32 @@ import { useAuth } from '@/app/context/auth-context';
 import { useRouter } from 'next/navigation';
 import { useDebounce } from 'use-debounce';
 import { SuperheroBaseType } from '@/types/superhero';
-import { useCreateTeam, useSuperheroes } from '@/lib/react-query-hooks';
+import {
+	useCreateTeam,
+	useSuperheroes,
+	useTeamSuggestion,
+} from '@/lib/react-query-hooks';
 import Image from 'next/image';
 import Loading from '@/app/loading';
 import { toast } from 'react-toastify';
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '@/components/ui/select';
+import {
+	Dialog,
+	DialogClose,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from '@/components/ui/dialog';
+import { TeamTypeToValuesMapper } from '@/lib/team-recommendation-mapper';
 
 const MAX_TEAM_MEMBERS = parseInt(
 	process.env.NEXT_PUBLIC_MAX_TEAM_MEMBERS ?? '10'
@@ -23,6 +45,9 @@ export default function CreateTeam() {
 	const router = useRouter();
 	const [teamName, setTeamName] = useState('');
 	const [searchTerm, setSearchTerm] = useState('');
+	const [recommendationType, setRecommendationType] = useState('balanced');
+	const [isRecommendationRequested, setRecommendationRequested] =
+		useState(false);
 	const [searchTermDebounced] = useDebounce(searchTerm, 500);
 	const [selectedSuperheroes, setSelectedSuperheroes] = useState<
 		SuperheroBaseType[]
@@ -31,7 +56,7 @@ export default function CreateTeam() {
 	const { data: superheroes, isLoading } = useSuperheroes(
 		{
 			page: 1,
-			size: 10,
+			size: MAX_TEAM_MEMBERS,
 		},
 		searchTermDebounced,
 		Boolean(searchTermDebounced)
@@ -39,6 +64,11 @@ export default function CreateTeam() {
 	const { isPending, mutate } = useCreateTeam({
 		name: teamName,
 		teamMembers: selectedSuperheroes.map((superhero) => superhero.id),
+	});
+	const { data: recommendedSuperheros } = useTeamSuggestion({
+		superheroSuggestionParams:
+			TeamTypeToValuesMapper[recommendationType ?? 'balanced'],
+		enabled: isRecommendationRequested,
 	});
 
 	const resultsRef = useRef<HTMLDivElement>(null);
@@ -49,6 +79,7 @@ export default function CreateTeam() {
 		}
 	}, [isAuthenticated, router]);
 
+	// for closing the results div when user clicks outside the div
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
 			if (
@@ -77,6 +108,12 @@ export default function CreateTeam() {
 			selectedSuperheroes.filter((hero) => hero.id !== heroId)
 		);
 	};
+
+	// for displaying resutls of recommendation
+	useEffect(() => {
+		setSelectedSuperheroes(recommendedSuperheros ?? []);
+		setRecommendationRequested(false);
+	}, [recommendedSuperheros]);
 
 	return (
 		<main className='container mx-auto py-8 px-12'>
@@ -125,7 +162,15 @@ export default function CreateTeam() {
 											/>
 											<Button
 												variant='ghost'
-												className='w-full justify-start font-bold text-md'
+												className={`w-full justify-start font-bold text-md ${
+													superhero.alignment === 'good'
+														? 'text-green-500'
+														: superhero.alignment === 'bad'
+														? 'text-red-500'
+														: superhero.alignment === 'neutral'
+														? 'text-neutral-500'
+														: 'text-blue-500'
+												}`}
 												disabled={
 													selectedSuperheroes.length >= MAX_TEAM_MEMBERS ||
 													!!selectedSuperheroes.find(
@@ -168,7 +213,15 @@ export default function CreateTeam() {
 					{selectedSuperheroes.map((superhero) => (
 						<Card
 							key={superhero.id}
-							className='mb-4 shadow-lg border border-gray-200 rounded-lg transition-transform duration-300 hover:shadow-xl hover:bg-secondary'
+							className={`border-4 mb-4 shadow-lg rounded-lg transition-transform duration-300 hover:shadow-xl hover:bg-secondary ${
+								superhero.alignment === 'good'
+									? 'border-green-500'
+									: superhero.alignment === 'bad'
+									? 'border-red-500'
+									: superhero.alignment === 'neutral'
+									? 'border-neutral-500'
+									: 'border-blue-500'
+							}`}
 						>
 							<CardContent className='p-4'>
 								<div key={superhero.id} className='flex items-center mb-2'>
@@ -198,6 +251,8 @@ export default function CreateTeam() {
 			</div>
 			<div className='w-full flex justify-center'>
 				<Button
+					type='button'
+					variant='default'
 					className='w-2/6'
 					disabled={
 						!teamName || teamName.length < 3 || selectedSuperheroes.length === 0
@@ -217,6 +272,52 @@ export default function CreateTeam() {
 					Create Team
 					{isPending && <Loading />}
 				</Button>
+			</div>
+			<div className='mt-32 w-full flex justify-center items-center flex-col'>
+				<Dialog>
+					<DialogTrigger className='mt-12' asChild>
+						<Button type='button' variant='default'>
+							Autogenerate?
+						</Button>
+					</DialogTrigger>
+					<DialogContent className='sm:max-w-md flex flex-col items-center justify-center'>
+						<DialogHeader>
+							<DialogTitle>Autogenerate</DialogTitle>
+							<DialogDescription>
+								Please select an option and autogenerate team based on the
+								criteria.
+							</DialogDescription>
+							<Select onValueChange={setRecommendationType}>
+								<SelectTrigger className='w-full my-4'>
+									<SelectValue placeholder='Select team generation type' />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value='balanced'>Balanced Team</SelectItem>
+									<SelectItem value='good'>Good Team</SelectItem>
+									<SelectItem value='bad'>Bad Team</SelectItem>
+									<SelectItem value='neutral'>Neutral Team</SelectItem>
+									<SelectItem value='intelligence'>Intelligent Team</SelectItem>
+									<SelectItem value='strength'>Strong Team</SelectItem>
+									<SelectItem value='speed'>Fast Team</SelectItem>
+									<SelectItem value='durability'>Durable Team</SelectItem>
+									<SelectItem value='power'>Powerful Team</SelectItem>
+									<SelectItem value='combat'>Combative Team</SelectItem>
+								</SelectContent>
+							</Select>
+						</DialogHeader>
+						<DialogFooter className='justify-center ite'>
+							<DialogClose asChild>
+								<Button
+									type='button'
+									variant='default'
+									onClick={() => setRecommendationRequested(true)}
+								>
+									Generate
+								</Button>
+							</DialogClose>
+						</DialogFooter>
+					</DialogContent>
+				</Dialog>
 			</div>
 		</main>
 	);

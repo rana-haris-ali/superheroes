@@ -9,6 +9,7 @@ export type SuperheroBaseType = {
 	power: number | null
 	combat: number | null
 	image_url: string | null
+	alignment: "good" | "bad" | "neutral" | "-"
 }
 
 export type SuperheroDetailsType = {
@@ -49,4 +50,8 @@ export type SuperheroAttributesType = {
 	durability: number | null
 	power: number | null
 	combat: number | null
+}
+
+export type SuperheroSuggestionParams = {
+	[x: string]: number | string
 }
