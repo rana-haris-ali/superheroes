@@ -48,8 +48,26 @@ export const createTeam = async (
 };
 
 // fetch teams of logged-in user
-export const fetchMyTeams = async (): Promise<TeamWithTeamMembersType[]> => {
-	const response = await apiClient.get('/teams/');
+export const fetchMyTeams = async (searchText: string | null = null): Promise<TeamWithTeamMembersType[]> => {
+	const response = await apiClient.get('/teams/', {
+		params: {
+			...(searchText && {
+				search_query: searchText
+			})
+		}
+	});
+	return response.data;
+};
+
+// fetch all teams
+export const fetchTeams = async (searchText: string | null = null): Promise<TeamWithTeamMembersType[]> => {
+	const response = await apiClient.get('/teams/all', {
+		params: {
+			...(searchText && {
+				search_query: searchText
+			})
+		}
+	});
 	return response.data;
 };
 

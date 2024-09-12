@@ -31,27 +31,32 @@ def create_new_team(
         raise e
 
 
-def get_teams_by_creator_id(
-    creator_id: int, db: Session
+def get_teams_and_average_attributes(
+     db: Session, search_query, creator_id: int = None,
 ) -> List[TeamWithMembersSchema]:
-    teams = (
-        db.query(Team)
-        .filter(Team.creator_id == creator_id)
-        .options(
-            joinedload(Team.team_members).load_only(
-                Superhero.id,
-                Superhero.name,
-                Superhero.image_url,
-                Superhero.intelligence,
-                Superhero.strength,
-                Superhero.speed,
-                Superhero.durability,
-                Superhero.power,
-                Superhero.combat,
-            )
+    query = db.query(Team)
+
+    # find teams of specific creator if creator_id is provided
+    if creator_id:
+        query = query.filter(Team.creator_id == creator_id)
+
+    # Optionally filter by team name if `search_query` is provided
+    if search_query:
+        query = query.filter(Team.name.ilike(f"%{search_query}%"))
+
+    teams = query.options(
+        joinedload(Team.team_members).load_only(
+            Superhero.id,
+            Superhero.name,
+            Superhero.image_url,
+            Superhero.intelligence,
+            Superhero.strength,
+            Superhero.speed,
+            Superhero.durability,
+            Superhero.power,
+            Superhero.combat,
         )
-        .all()
-    )
+    ).all()
 
     # Prepare the result with teams and their average attributes
     result = []
