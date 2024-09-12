@@ -1,4 +1,7 @@
+from typing import Optional
+
 from pydantic import BaseModel, root_validator, model_validator, Field
+from enum import Enum
 
 
 class SuperheroAttributesSchema(BaseModel):
@@ -112,3 +115,4 @@ class SuperheroUpdateSchema(BaseModel):
     durability: Optional[int] = Field(None, ge=0, le=100)
     power: Optional[int] = Field(None, ge=0, le=100)
     combat: Optional[int] = Field(None, ge=0, le=100)
+

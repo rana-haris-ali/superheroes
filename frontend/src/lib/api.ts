@@ -71,10 +71,13 @@ export const fetchTeams = async (searchText: string | null = null): Promise<Team
 	return response.data;
 };
 
-export const suggestSuperheroesForTeam = async (superheroSuggestionParams: SuperheroSuggestionParams): Promise<SuperheroBaseType[]> => {
+export const suggestSuperheroesForTeam = async (superheroSuggestionParams: SuperheroSuggestionParams, sortingPriority: string | undefined = undefined): Promise<SuperheroBaseType[]> => {
 	const response = await apiClient.get('/superheroes/suggest/', {
 		params: {
-			...superheroSuggestionParams
+			...superheroSuggestionParams,
+			...(sortingPriority && {
+				sort: sortingPriority
+			})
 		}
 	});
 	return response.data;
