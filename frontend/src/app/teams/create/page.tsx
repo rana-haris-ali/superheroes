@@ -8,7 +8,7 @@ import { Search, X } from 'lucide-react';
 import { useAuth } from '@/app/context/auth-context';
 import { useRouter } from 'next/navigation';
 import { useDebounce } from 'use-debounce';
-import { SuperheroBaseType } from '@/types/superhero';
+import { SuperheroAttributesType, SuperheroBaseType } from '@/types/superhero';
 import {
 	useCreateTeam,
 	useSuperheroes,
@@ -35,6 +35,7 @@ import {
 	DialogTrigger,
 } from '@/components/ui/dialog';
 import { TeamTypeToValuesMapper } from '@/lib/team-recommendation-mapper';
+import { attributes } from '@/lib/superhero-attributes';
 
 const MAX_TEAM_MEMBERS = parseInt(
 	process.env.NEXT_PUBLIC_MAX_TEAM_MEMBERS ?? '10'
@@ -226,7 +227,7 @@ export default function CreateTeam() {
 							}`}
 						>
 							<CardContent className='p-4'>
-								<div key={superhero.id} className='flex items-center mb-2'>
+								<div className='flex items-center justify-center mb-2'>
 									<Image
 										src={superhero.image_url ?? '/superhero-avatar.jpg'}
 										alt={superhero.name}
@@ -245,6 +246,18 @@ export default function CreateTeam() {
 											size={16}
 										/>
 									</Button>
+								</div>
+								{/* Display superhero attributes */}
+								<div className='mt-2 flex flex-wrap gap-2 items-center justify-center'>
+									{attributes.map((attr) => (
+										<div
+											key={attr}
+											className='flex justify-center bg-gray-100 dark:bg-slate-800 rounded-lg py-1 text-xs font-medium w-1/3'
+										>
+											<span className='capitalize mr-1'>{attr}:</span>
+											<span>{superhero[attr as keyof SuperheroAttributesType]}</span>
+										</div>
+									))}
 								</div>
 							</CardContent>
 						</Card>
