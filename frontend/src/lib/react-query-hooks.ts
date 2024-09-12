@@ -1,7 +1,8 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { createTeam, fetchMyTeams, fetchSuperheroById, fetchSuperheroes } from './api';
+import { createTeam, fetchMyTeams, fetchSuperheroById, fetchSuperheroes, suggestSuperheroesForTeam } from './api';
 import { PaginationParams } from '@/types/pagination';
 import { CreateTeamType } from '@/types/team';
+import { SuperheroSuggestionParams } from '@/types/superhero';
 
 // Hook to fetch superhero by id
 export const useSingleSuperhero = ({ id }: { id: number }) => {
@@ -34,11 +35,27 @@ export const useMyTeams = () => {
 	})
 };
 
-
 // Hook to create a team
 export const useCreateTeam = (teamParams: CreateTeamType) => {
 	return useMutation({
 		mutationFn: () => createTeam(teamParams),
 		mutationKey: ['create-team'],
+	})
+};
+
+
+// Hook to fetch superhero suggestion for a team
+export const useTeamSuggestion = ({
+	superheroSuggestionParams,
+	enabled = false
+}: {
+	superheroSuggestionParams: SuperheroSuggestionParams,
+	enabled: boolean
+}
+) => {
+	return useQuery({
+		queryFn: () => suggestSuperheroesForTeam(superheroSuggestionParams),
+		queryKey: ['create-team', superheroSuggestionParams],
+		enabled
 	})
 };
