@@ -55,3 +55,13 @@ export type SuperheroAttributesType = {
 export type SuperheroSuggestionParams = {
 	[x: string]: number | string
 }
+
+export type SuperheroUpdatePayload = {
+	name?: string;
+	intelligence?: number;
+	strength?: number;
+	speed?: number;
+	durability?: number;
+	power?: number;
+	combat?: number;
+}

@@ -16,7 +16,7 @@ apiClient.interceptors.response.use(
 	},
 	(error) => {
 		// Check if the error is a 401
-		if (error.response && error.response.status === 401) {
+		if (error.response && (error.response.status === 401 || error.response.status === 403)) {
 			sessionStorage.removeItem('token');
 			sessionStorage.removeItem('name');
 			delete axios.defaults.headers.common['Authorization'];

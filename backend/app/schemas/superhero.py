@@ -86,3 +86,29 @@ class SuperheroSuggestionRequest(BaseModel):
 
 class CreateFavoriteSuperheroSchema(BaseModel):
     id: int
+
+
+class SuperheroAttributeSortingSchema(BaseModel):
+    # Define an Enum for allowed sort values
+    class SortOptions(str, Enum):
+        intelligence = "intelligence"
+        speed = "speed"
+        combat = "combat"
+        strength = "strength"
+        power = "power"
+        durability = "durability"
+
+    sort: Optional[SortOptions] = Field(
+        None,
+        description="Sort by one of the attributes: intelligence, speed, combat, strength",
+    )
+
+
+class SuperheroUpdateSchema(BaseModel):
+    name: Optional[str] = Field(None, min_length=2, max_length=100)
+    intelligence: Optional[int] = Field(None, ge=0, le=100)
+    strength: Optional[int] = Field(None, ge=0, le=100)
+    speed: Optional[int] = Field(None, ge=0, le=100)
+    durability: Optional[int] = Field(None, ge=0, le=100)
+    power: Optional[int] = Field(None, ge=0, le=100)
+    combat: Optional[int] = Field(None, ge=0, le=100)
